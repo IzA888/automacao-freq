@@ -14,7 +14,7 @@ import org.bytedeco.opencv.global.opencv_imgproc;
 
 public class IdentificarRespostas {
     
-    public void identificarResp(String imgPath){
+    public static void identificarResp(String imgPath){
         // Carrega imagem em escala de cinza
         Mat src = opencv_imgcodecs.imread(imgPath, opencv_imgcodecs.IMREAD_GRAYSCALE);
         

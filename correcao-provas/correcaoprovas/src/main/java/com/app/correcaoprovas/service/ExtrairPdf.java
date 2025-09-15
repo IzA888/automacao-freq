@@ -14,6 +14,8 @@ import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Service;
 
+import com.app.correcaoprovas.service.IdentificarRespostas;
+
 @Service
 public class ExtrairPdf{
 
@@ -31,7 +33,7 @@ public class ExtrairPdf{
                     File imgFile = new File("page-" + page + ".png");
                     ImageIO.write(image, "png", imgFile);
 
-                    IdentificarRespostas("page-" + page + ".png");
+                    IdentificarRespostas.identificarResp(imgFile.getAbsolutePath());
                 }
             }
         } else {
