@@ -16,8 +16,4 @@ public class CorrecaoProva implements CorrecaoProvasImp {
         return provasCorrigidas;
     }
 
-    @Override
-    public List<Prova> scannerProva(){
-        return provas;
-    }
 }

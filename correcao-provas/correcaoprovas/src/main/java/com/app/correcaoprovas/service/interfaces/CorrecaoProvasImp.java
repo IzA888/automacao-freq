@@ -8,5 +8,4 @@ public interface CorrecaoProvasImp {
     
     List<Prova> corrigirProvas(Prova prova);
 
-    List<Prova> scannerProva();
 }

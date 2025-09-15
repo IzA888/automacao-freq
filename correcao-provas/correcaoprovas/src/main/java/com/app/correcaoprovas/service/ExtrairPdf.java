@@ -1,7 +1,16 @@
 package com.app.correcaoprovas.service;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.text.PDFTextStripper;
+
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
+import java.lang.String;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.stereotype.Service;
 
@@ -10,20 +19,24 @@ public class ExtrairPdf{
 
     File pasta = new File("C:/Documents/provas");
 
-    if (pasta.exists() && pasta.isDirectory()){
-        File[] arquivos = pasta.listFiles((dir, nome) -> nome.toLowerCase().endsWith(".pdf"));
+    if(pasta.exists() && pasta.isDirectory()) {
+        PDDocument[] arquivos = pasta.listFiles((dir, nome) -> nome.toLowerCase().endsWith(".pdf"));
 
-        if (arquivos.length() != null){
-            for (File pdf : arquivos){
-                String conteudo = extrairTexto(pdf);
+        if (arquivos.length != 0){
+            for (PDDocument pdf : arquivos){
+                PDFRenderer renderer = new PDFRenderer(pdf);
+
+                for (int page = 0; page < pdf.getNumberOfPages(); page++){
+                    BufferedImage image = renderer.renderImageWithDPI(page, 300);
+                    File imgFile = new File("page-" + page + ".png");
+                    ImageIO.write(image, "png", imgFile);
+
+                    IdentificarRespostas("page-" + page + ".png");
+                }
             }
         } else {
-            throw new IOException() ;
+            throw new IOException();
         }
     }
 
-    private String extrairTexto(File pdf) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'extrairTexto'");
-    }
 }
