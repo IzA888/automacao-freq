@@ -19,17 +19,17 @@ public class Prova {
     @Column(name = "materia", nullable = false)
     private String materia;
 
-    @Column(name = "gabarito", nullable = false)
-    private String gabarito;
+    @Column(name = "questoes", nullable = false)
+    private String questoes;
 
     @Column(name = "notas", nullable = false)
     @OneToMany(mappedBy = "prova")
     private List<Nota> notas;
 
-    public Prova(Long id, String materia, String gabarito, List<Nota> notas) {
+    public Prova(Long id, String materia, String questoes, List<Nota> notas) {
         this.id = id;
         this.materia = materia;
-        this.gabarito = gabarito;
+        this.questoes = questoes;
         this.notas = notas;
     }
 
@@ -49,12 +49,12 @@ public class Prova {
         this.materia = materia;
     }
 
-    public String getGabarito() {
-        return gabarito;
+    public String getQuestoes() {
+        return questoes;
     }
 
-    public void setGabarito(String gabarito) {
-        this.gabarito = gabarito;
+    public void setQuestoes(String questoes) {
+        this.questoes = questoes;
     }
 
     public List<Nota> getNotas() {
