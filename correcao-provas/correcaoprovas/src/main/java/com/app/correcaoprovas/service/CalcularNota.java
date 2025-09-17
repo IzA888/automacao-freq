@@ -1,20 +1,24 @@
 package com.app.correcaoprovas.service;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.app.correcaoprovas.model.Aluno;
-import com.app.correcaoprovas.model.Nota;
-import com.app.correcaoprovas.model.Prova;
-import com.app.correcaoprovas.service.interfaces.CalcularNotaImp;
 
 @Service
-public class CalcularNota implements CalcularNotaImp {
+public class CalcularNota {
+    /**
+     * 
+     * @param correcao
+     * @param valorQuestao
+     * @return total de pontos
+     */
 
-    @Override
-    public List<Nota> calcularNotas(List<Prova> provas, List<Aluno> alunos){
-
-        return notasCalculadas;
+    public Double calcularNotas(Map<Integer, Boolean> correcao, Double valorQuestao){
+        long acertos =  correcao.values().stream()
+                        .filter(Boolean::booleanValue)
+                        .count();
+                    
+        return acertos * valorQuestao;
     }
 }

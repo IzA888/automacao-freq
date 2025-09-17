@@ -45,7 +45,7 @@ public class AlternativasService {
     //     }
     // }
 
-    public static List<Boolean> aletrnativasMarcadas(Mat src, List<Rect> bolhas){
+    public static List<Boolean> alternativasMarcadas(Mat src, List<Rect> bolhas){
 
         List<Boolean> marcadas = new ArrayList();
 
