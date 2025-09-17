@@ -45,7 +45,8 @@ public class AlternativasService {
     //     }
     // }
 
-    public static List<Boolean> alternativasMarcadas(Mat src, List<Rect> bolhas){
+    public static List<Boolean> alternativasMarcadas(List<Rect> bolhas) throws Exception{
+        Mat src = ArquivoService.carregarImg(ArquivoService.carregarArquivos());
 
         List<Boolean> marcadas = new ArrayList();
 
