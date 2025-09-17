@@ -63,7 +63,7 @@ public class ArquivoService{
 
     }
 
-    public Mat carregaImg(File pdfFile) throws Exception{
+    public static Mat carregarImg(File pdfFile) throws Exception{
 
         var documento = PDDocument.load(pdfFile);
         var renderer = new PDFRenderer(documento);

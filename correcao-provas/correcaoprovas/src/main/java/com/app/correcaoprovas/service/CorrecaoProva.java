@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 
 import org.bytedeco.opencv.opencv_core.MatVector;
 import org.bytedeco.opencv.opencv_core.Rect;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.correcaoprovas.dto.ProvaDto;
@@ -26,28 +27,28 @@ public class CorrecaoProva {
      * @return a reposta marcada e se ela está correta
      */
 
+    @Autowired
+    private Prova prova;
 
-    public Map<Integer, Boolean> corrigirProvas(List<Prova> respostas, Map<Integer, String> gabarito) {
+    public Map<Integer, Boolean> corrigirProvas(List<String> respostas, Map<Integer, String> gabarito) {
         Map<Integer, Boolean> resultado = new HashMap<>();
         
         //Resposta por questão
-        Map<Integer, List<Prova>> porQuestao = new HashMap<>();
-        for(Prova r : respostas){
-            porQuestao.computeIfAbsent(r.getQuestoes(), k -> new ArrayList<>()).add(r);
+        Map<Integer, List<String>> porQuestao = new HashMap<>();
+        for(String r : respostas){
+            porQuestao.computeIfAbsent(prova.getQuestoes(), k -> new ArrayList<>()).add(r);
         }
 
         //Verifica cada questao
-        for (Map.Entry<Integer, List<Prova>> entry : porQuestao.entrySet()){
+        for (Map.Entry<Integer, List<String>> entry : porQuestao.entrySet()){
             int questao = entry.getKey();
-            List<Prova> alternativas = entry.getValue();
+            List<String> alternativas = entry.getValue();
 
             //Pega as marcadas
-            Optional<Prova> marcada = alternativas.stream()
-                                    .filter(b -> AlternativasService.alternativasMarcadas(b))
-                                    .findFirst();
+            Optional<String> marcada = alternativas.stream().findFirst();
                         
             if(marcada.isPresent()){
-                String respostaAluno = marcada.get().getAlternativas();
+                String respostaAluno = marcada.get();
                 String correta = gabarito.get(questao);
                 resultado.put(questao, respostaAluno.equals(correta));
             } else {
