@@ -2,6 +2,8 @@ package com.app.correcaoprovas.model;
 
 import java.util.List;
 
+import org.bytedeco.opencv.opencv_core.Rect;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,17 +22,34 @@ public class Prova {
     private String materia;
 
     @Column(name = "questoes", nullable = false)
-    private String questoes;
+    private Integer questoes;
+
+    @Column(name = "alternativa_marcada", nullable = false)
+    private String alternativas;
+
+
+    public String getAlternativas() {
+        return alternativas;
+    }
+
+    public void setAlternativas(String alternativas) {
+        this.alternativas = alternativas;
+    }
 
     @Column(name = "notas", nullable = false)
     @OneToMany(mappedBy = "prova")
     private List<Nota> notas;
 
-    public Prova(Long id, String materia, String questoes, List<Nota> notas) {
+    public Prova(Long id, String materia, Integer questoes, String alternativas, List<Nota> notas) {
         this.id = id;
         this.materia = materia;
         this.questoes = questoes;
+        this.alternativas = alternativas;
         this.notas = notas;
+    }
+
+    public Prova(int questao, String string, Rect r, Boolean marcada) {
+        
     }
 
     public Long getId() {
@@ -49,11 +68,11 @@ public class Prova {
         this.materia = materia;
     }
 
-    public String getQuestoes() {
+    public Integer getQuestoes() {
         return questoes;
     }
 
-    public void setQuestoes(String questoes) {
+    public void setQuestoes(Integer questoes) {
         this.questoes = questoes;
     }
 
