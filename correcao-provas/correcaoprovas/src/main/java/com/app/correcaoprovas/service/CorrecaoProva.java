@@ -27,7 +27,6 @@ public class CorrecaoProva {
      * @return a reposta marcada e se ela está correta
      */
 
-    @Autowired
     private Prova prova;
 
     public Map<Integer, Boolean> corrigirProvas(List<String> respostas, Map<Integer, String> gabarito) {

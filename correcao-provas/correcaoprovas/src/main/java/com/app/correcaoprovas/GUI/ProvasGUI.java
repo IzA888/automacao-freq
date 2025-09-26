@@ -1,60 +1,61 @@
-package com.app.correcaoprovas.GUI;
+// package com.app.correcaoprovas.GUI;
 
-import java.io.File;
+// import java.io.File;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+// // import javafx.scene.layout.Pane;
+// // import javafx.scene.control.ScrollPane;
+// import javafx.stage.Stage;
 
-import java.awt.*;
+// import java.awt.*;
 
-import com.app.correcaoprovas.service.ArquivoService;
+// import com.app.correcaoprovas.service.ArquivoService;
+// import org.open
+// // import javafx.scene.Scene;
+// // import javafx.scene.layout.VBox;
+// // import javafx.stage.DirectoryChooser;
 
-public class ProvasGUI extends JFrame{
-    private  JButton btnSelecionarPasta;
-    private JButton btnProcessar;
-    private JTextArea logArea;
-    private File pastaSelecionada;
+// public class ProvasGUI extends Scene {
+//     private Button btnSelecionarPasta;
+//     private Button btnProcessar;
+//     private TextArea logArea;
+//     private File pastaSelecionada;
 
-    public ProvasGUI(){
-        setTitle("Correção de provas");
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//     public ProvasGUI() {
+//         setTitle("Correção de provas");
 
-        btnSelecionarPasta = new JButton("Selecionar pasta");
-        btnProcessar = new JButton("Processar provas");
-        logArea = new JTextArea();
-        logArea.setEditable(false);
+//         btnSelecionarPasta = new Button("Selecionar pasta");
+//         btnProcessar = new Button("Processar provas");
+//         logArea = new TextArea();
+//         logArea.setEditable(false);
 
-        JPanel panel = new JPanel(new FlowLayout());
-        panel.add(btnSelecionarPasta);
-        panel.add(btnProcessar);
+//         VBox panel = new VBox(10, btnSelecionarPasta, btnProcessar);
+//         ScrollPane scrollPane = new ScrollPane(logArea);
+//         VBox root = new VBox(10, panel, scrollPane);
 
-        add(panel, BorderLayout.NORTH);
-        add(new JScrollPane(logArea), BorderLayout.CENTER);
+//         btnSelecionarPasta.setOnAction(e -> {
+//             DirectoryChooser chooser = new DirectoryChooser();
+//             chooser.setTitle("Selecionar pasta");
+//             File pasta = chooser.showDialog(this);
+//             if (pasta != null) {
+//                 pastaSelecionada = pasta;
+//                 log("Pasta selecionada: " + pastaSelecionada.getAbsolutePath());
+//             }
+//         });
 
-        //Ação selecionar pasta
-        btnSelecionarPasta.addActionListener(e -> {
-            pastaSelecionada = ArquivoService.carregarArquivos();
-            log("Pasta selecionada: " + pastaSelecionada.getAbsolutePath());
-        });
+//         btnProcessar.setOnAction(e -> {
+//             var pdfs = ArquivoService.extrairPdfs();
+//             if (pdfs != null) {
+//                 pdfs.stream().forEach(pdf -> log("Processando pasta selecionada: " + pdf));
+//             } else {
+//                 log("Erro ao processar arquivos.");
+//             }
+//             log("Processamento Concluído");
+//         });
 
-        btnProcessar.addActionListener(e -> {
-            var pdfs = ArquivoService.extrairPdfs();
-            if( pdfs != null){
-                pdfs.stream().forEach(pdf -> log("Processando pasta selecionada: " + pdf));                
-            }else {
-                throw new RuntimeException("Erro");
-            }
-            log("Processamento Concluído");
+//         setScene(new Scene(root, 600, 400));
+//     }
 
-        });
-    }
-
-    private void log(String msg){
-        logArea.append(msg + "\n");
-    }
-    
-}
+//     private void log(String msg) {
+//         logArea.appendText(msg + "\n");
+//     }
+// }
