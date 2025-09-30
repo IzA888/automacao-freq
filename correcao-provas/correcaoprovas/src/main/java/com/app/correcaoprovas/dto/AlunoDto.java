@@ -17,6 +17,7 @@ import lombok.Setter;
 public class AlunoDto {
  
     private String nome;
-
-    private List<NotasDto> notas;
+    private String turma;
+    private String ano;
+    private Double notas;
 }

@@ -17,8 +17,8 @@ import lombok.Setter;
 public class ProvaDto {
 
     private String materia;
-
-    private String gabarito;
-
-    private List<NotasDto> notas;
+    private String turma;
+    private String ano;
+    private Integer questao;
+    private String resposta;
 }

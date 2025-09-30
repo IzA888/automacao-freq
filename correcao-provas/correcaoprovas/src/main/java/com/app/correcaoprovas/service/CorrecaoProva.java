@@ -1,21 +1,13 @@
 package com.app.correcaoprovas.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
-import javax.swing.JOptionPane;
-
-import org.bytedeco.opencv.opencv_core.MatVector;
-import org.bytedeco.opencv.opencv_core.Rect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.app.correcaoprovas.dto.ProvaDto;
 import com.app.correcaoprovas.model.Prova;
 
 @Service
@@ -29,7 +21,7 @@ public class CorrecaoProva {
 
     private Prova prova;
 
-    public Map<Integer, Boolean> corrigirProvas(List<String> respostas, Map<Integer, String> gabarito) {
+    public Map<Integer, Boolean> corrigirProvas(List<String> respostas, List< String> gabarito) {
         Map<Integer, Boolean> resultado = new HashMap<>();
         
         //Resposta por questão

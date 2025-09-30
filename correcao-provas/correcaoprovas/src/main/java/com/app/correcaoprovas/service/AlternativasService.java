@@ -7,49 +7,54 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.bytedeco.opencv.global.opencv_core;
-import org.bytedeco.opencv.global.opencv_imgcodecs;
-import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.Mat;
-import org.bytedeco.opencv.opencv_core.MatVector;
 import org.bytedeco.opencv.opencv_core.Rect;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AlternativasService {
 
-    // public static String detectarAlternativas() {
-    //     Map<Integer, List<Rect>> linhas = new TreeMap();
-    //     int toleranciaY = 20; //Tolerância vertical
+    public static List<String> detectarAlternativas(List<Rect> bolhas) {
+        Map<Integer, List<Rect>> linhas = new TreeMap();
+        int toleranciaY = 20; //Tolerância vertical
 
-    //     for(Rect r : bolhas) {
-    //         int yBase = (r.y() / toleranciaY) * toleranciaY;
-    //         linhas.computeIfAbsent(yBase, y -> new ArrayList<>()).add(r);
-    //     }
+        //Agrupar bolhas por linhas
+        for(Rect r : bolhas) {
+            int yBase = (r.y() / toleranciaY) * toleranciaY;
+            linhas.computeIfAbsent(yBase, y -> new ArrayList<>()).add(r);
+        }
 
-    //     //Processar cada linha
-    //     int questao = 1;
-    //     char[] alternativas = {'A', 'B', 'C', 'D'};
+        //Processar cada linha
+        int questao = 1;
+        List<String> alternativas = List.of("A", "B", "C", "D");
 
-    //     for (Map.Entry<Integer, List<Rect>> entry : linhas.entrySet()) {
-    //         List<Rect> linha = entry.getValue();
+        //ordenar linha por y
+        for (Map.Entry<Integer, List<Rect>> entry : linhas.entrySet()) {
+            List<Rect> linha = entry.getValue();
 
-    //         //Ordenar bolhas
-    //         linha.sort(Comparator.comparingInt(Rect::x));
+            //Ordenar bolhas
+            linha.sort(Comparator.comparingInt(Rect::x));
 
-    //         for (int i=0; i< linha.size() && i< alternativas.length; i++){
-    //             Rect r = linha.get(i);
-    //             System.out.println("Questão " + questao + "-> " + alternativas[i]);
-    //         }
+            //Mapear bolhas para alternativas
+            for (int i=0; i< linha.size() && i< alternativas.size(); i++){
+                Rect r = linha.get(i);
+                alternativas.set(i, alternativas.get(i));
 
-    //         questao++;
-    //     }
-    // }
+            }
+          
+            questao++;
+        }
+        
+        return alternativas;
+    }
 
-    public static List<Boolean> alternativasMarcadas(List<Rect> bolhas) throws Exception{
+    public static List<Boolean> alternativasMarcadas(List<String> alternativas) throws Exception{
         Mat src = ArquivoService.carregarImg(ArquivoService.carregarArquivos());
+        List<Rect> bolhas = ArquivoService.encontrarBolhas(src);
 
         List<Boolean> marcadas = new ArrayList();
 
+        //Verificar quais bolhas estão marcadas
         for (Rect b : bolhas){
             Mat bolha = new Mat(src, b);
 
