@@ -1,17 +1,21 @@
-package com.app.correcaoprovas.service;
+package com.app.correcaoprovas.utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 import org.bytedeco.opencv.global.opencv_core;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Rect;
 import org.springframework.stereotype.Service;
 
-@Service
+import jakarta.persistence.criteria.Predicate.BooleanOperator;
+
+
 public class AlternativasService {
 
     public static List<String> detectarAlternativas(List<Rect> bolhas) {
@@ -48,23 +52,32 @@ public class AlternativasService {
         return alternativas;
     }
 
-    public static List<Boolean> alternativasMarcadas(List<String> alternativas) throws Exception{
-        Mat src = ArquivoService.carregarImg(ArquivoService.carregarArquivos());
-        List<Rect> bolhas = ArquivoService.encontrarBolhas(src);
+    public static List<Boolean> alternativasMarcadas() throws Exception{
+        List<List<Boolean>> alternativasMarcadas = ArquivoService.carregarArquivos().stream().map( pdf -> {
+            try {
+                Mat src = ArquivoService.carregarImg(pdf);
+                //Mat src = ArquivoService.carregarImg(ArquivoService.carregarArquivos());
+                List<Rect> bolhas = ArquivoService.encontrarBolhas(src);
+        
+                List<Boolean> marcadas = new ArrayList();
+        
+                //Verificar quais bolhas estão marcadas
+                for (Rect b : bolhas){
+                    Mat bolha = new Mat(src, b);
+        
+                    double cheio = opencv_core.countNonZero(bolha);
+                    double area = b.width() * b.height();
+                    double proporcao = cheio/area;
+        
+                    marcadas.add(proporcao > 0.3);
+                }
+                
+                return marcadas;
 
-        List<Boolean> marcadas = new ArrayList();
-
-        //Verificar quais bolhas estão marcadas
-        for (Rect b : bolhas){
-            Mat bolha = new Mat(src, b);
-
-            double cheio = opencv_core.countNonZero(bolha);
-            double area = b.width() * b.height();
-            double proporcao = cheio/area;
-
-            marcadas.add(proporcao > 0.3);
-        }
-
-        return marcadas;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
+        return alternativasMarcadas.stream().flatMap(List::stream).toList();
     }
 }

@@ -14,7 +14,7 @@ public class CalcularNota {
      * @return total de pontos
      */
 
-    public Double calcularNotas(Map<Integer, Boolean> correcao, Double valorQuestao){
+    public static Double calcularNotas(Map<Integer, Boolean> correcao, Double valorQuestao){
         Long acertos =  correcao.values().stream()
                         .filter(Boolean::booleanValue)
                         .count();

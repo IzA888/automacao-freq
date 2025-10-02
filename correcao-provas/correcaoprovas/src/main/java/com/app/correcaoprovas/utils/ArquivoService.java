@@ -1,4 +1,4 @@
-package com.app.correcaoprovas.service;
+package com.app.correcaoprovas.utils;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -29,32 +29,31 @@ import javax.swing.JOptionPane;
 import org.springframework.stereotype.Service;
 
 
-@Service
+
 public class ArquivoService{
 
-    public static File carregarArquivos(){
+    public static List<File> carregarArquivos(){
         //Carregar pasta com as provas a serem corrigidas
 
         JFileChooser seletor = new JFileChooser();
         seletor.setDialogTitle("Selecione s pasta com as provas a serem corrigidas(deve conter um arquivo com o nome 'gabarito.pdf' com as repostas)");
         seletor.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            
+        
+        //Abrir seletor de arquivos
         int resultado = seletor.showOpenDialog(null);
         if(resultado != JFileChooser.APPROVE_OPTION){
             System.out.println("Nenhuma pasta selecionada");
         }
+        
         File pasta = seletor.getSelectedFile();
-        return pasta;
-    }
-
-    public static List<File> extrairPdfs(){
     
         List<File> pdfs = new ArrayList<>();
 
-        if(ArquivoService.carregarArquivos() != null && ArquivoService.carregarArquivos().exists() && ArquivoService.carregarArquivos().isDirectory()){
-            for (File file : Objects.requireNonNull(ArquivoService.carregarArquivos().listFiles())){
-                if( file.isFile() && file.getName().toLowerCase().endsWith(".pdf")){
-                    pdfs.add(file);
+        //Listar arquivos PDF na pasta
+        if(pasta != null && pasta.exists() && pasta.isDirectory()){
+            for (File pdf : Objects.requireNonNull(pasta.listFiles())){
+                if( pdf.isFile() && pdf.getName().toLowerCase().endsWith(".pdf")){
+                    pdfs.add(pdf);
                 }
             }
         }
@@ -100,13 +99,13 @@ public class ArquivoService{
         return bolhas;
     }
 
-    public void salvarResultados(){
+    public void salvarResultados(List<File> pdfs) throws Exception{
         File pastaSaida = new File("resultados");
         if(!pastaSaida.exists()) pastaSaida.mkdirs();
 
         JOptionPane.showMessageDialog(null, "Corrigindo provas...");
 
-        for (File file : Objects.requireNonNull(this.extrairPdfs())){
+        for (File file : Objects.requireNonNull(pdfs.toArray(new File[0]))){
             if (file.getName().equalsIgnoreCase("gabarito.pdf")) continue;
             if (file.getName().toLowerCase().endsWith(".pdf")) {
                 File resultados = new File(pastaSaida, file.getName().replace(".pdf", "resultado.xlsx"));// salvar em formato excel

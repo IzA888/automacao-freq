@@ -15,11 +15,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class GabaritoService {
 
-    public void IdentificarGabarito(){
-        File gabarito = new File(ArquivoService.carregarArquivos(), "gabarito.pdf");
-        if(!gabarito.exists()){
-            JOptionPane.showMessageDialog(null, "Não foi encontrado o arquivo 'gabarito.pdf' na pasta",
-             "Erro", JOptionPane.ERROR_MESSAGE);
+    public void IdentificarGabarito(List<File> pdfs){
+        if (pdfs.equals("gabarito.pdf")) {
+            File parent = pdfs.get(0).getParentFile();
+            File gabarito = new File(parent, "gabarito.pdf");
+            
+            if(!gabarito.exists()){
+                JOptionPane.showMessageDialog(null, "Não foi encontrado o arquivo 'gabarito.pdf' na pasta",
+                 "Erro", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
    
