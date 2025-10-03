@@ -7,18 +7,14 @@ import com.app.correcaoprovas.controller.RESTFactory.AlunoRestFactory;
 import com.app.correcaoprovas.controller.RESTFactory.ProvaRestFactory;
 import com.app.correcaoprovas.dto.AlunoDto;
 import com.app.correcaoprovas.dto.ProvaDto;
-import com.app.correcaoprovas.model.Prova;
 import com.app.correcaoprovas.service.AlunoService;
 import com.app.correcaoprovas.service.ProvaService;
 import java.util.List;
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -67,7 +63,7 @@ public class ProvaController {
     }
 
     @GetMapping("/ano")
-    public ResponseEntity<List<ProvaDto>> getProvaByAno(@RequestBody Integer ano){
+    public ResponseEntity<List<ProvaDto>> getProvaByAno(@RequestBody String ano){
     return ResponseEntity.ok().body(ProvaRestFactory.toDto(ProvaService.getByAno(ano)));
     }
     

@@ -23,7 +23,7 @@ public class AlunoService {
     }
 
     public static Aluno getByName(String nome) {
-        return alunoRepo.findByName(nome).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        return alunoRepo.findByNome(nome).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
     }
 
 }

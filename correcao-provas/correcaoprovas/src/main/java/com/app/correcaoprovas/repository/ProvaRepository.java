@@ -13,6 +13,6 @@ public interface ProvaRepository extends JpaRepository<Prova, Long>{
 
     Optional<List<Prova>> findByTurma(String turma);
 
-    Optional<List<Prova>> findByAno(Integer ano);
+    Optional<List<Prova>> findByAno(String ano);
     
 }

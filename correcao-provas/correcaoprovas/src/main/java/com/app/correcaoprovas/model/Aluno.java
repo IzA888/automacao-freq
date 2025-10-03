@@ -28,7 +28,7 @@ public class Aluno {
     @Column(name = "notas")
     private Double notas;
 
-    @OneToOne(optional = false, mappedBy = "prova")
+    @OneToOne(optional = false, mappedBy = "aluno_id")
     private Prova prova_id;
 
     public Aluno(Long id, String nome, String turma, String ano, Double notas, Prova prova_id) {

@@ -30,7 +30,7 @@ public class ProvaService {
        return provaRepo.findByTurma(turma).orElseThrow(() -> new RuntimeException("Turma não encontrada"));
     }
 
-    public static List<Prova> getByAno(Integer ano) {
+    public static List<Prova> getByAno(String ano) {
         return provaRepo.findByAno(ano).orElseThrow(() -> new RuntimeException("Ano não encontrada"));
     }
 
@@ -134,18 +134,22 @@ public class ProvaService {
 
     public static List<File> carregarArquivos(String path) {
         File pasta = new File(path);
-    
-        List<File> pdfs = new ArrayList<>();
-
+        
         //Listar arquivos PDF na pasta
         if(pasta != null && pasta.exists() && pasta.isDirectory()){
+            List<File> pdfs = new ArrayList<>();
             for (File pdf : Objects.requireNonNull(pasta.listFiles())){
                 if( pdf.isFile() && pdf.getName().toLowerCase().endsWith(".pdf")){
                     pdfs.add(pdf);
                 }
             }
+            if(pdfs.isEmpty()){
+                throw new RuntimeException("Vazio");
+            } else {
+                return pdfs;
+            }
+        } else {
+            throw new RuntimeException("Pasta inválida");
         }
-
-        return pdfs;
     }
 }

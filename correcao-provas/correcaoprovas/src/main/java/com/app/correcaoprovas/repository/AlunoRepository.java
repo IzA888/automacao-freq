@@ -13,6 +13,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
     Optional<List<Aluno>> findByTurma(String turma);
 
-    Optional<Aluno> findByName(String nome);
+    Optional<Aluno> findByNome(String nome);
     
 }
