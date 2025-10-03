@@ -22,9 +22,6 @@ public class ProvaService {
     @Autowired
     private static ProvaRepository provaRepo;
 
-    @Autowired
-    private static Prova prova;
-
     public static Prova getById(Long id) {
         return provaRepo.findById(id).orElseThrow(() -> new RuntimeException("Prova não encontrada"));
     }
@@ -38,6 +35,29 @@ public class ProvaService {
     }
 
     public static Prova save(Prova prova) {
+        ProvaUtils.infoProva().forEach((k, v) -> {
+            switch (k) {
+                case "turma":
+                    prova.setTurma(v);
+                    break;
+                case "materia":
+                    prova.setMateria(v);
+                    break;
+                case "aluno":
+                    prova.setAluno_id(AlunoService.getByName(v));
+                    break;
+                case "ano":
+                    try {
+                        prova.setAno(v);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Ano inválido: " + v);
+                    }
+                    break;
+                default:
+                    // Ignorar chaves desconhecidas
+                    break;
+            }
+        });
         return provaRepo.save(prova);
     }
 

@@ -22,4 +22,8 @@ public class AlunoService {
         return alunoRepo.findByTurma(turma).orElseThrow(() -> new RuntimeException("Turma não encontrada"));
     }
 
+    public static Aluno getByName(String nome) {
+        return alunoRepo.findByName(nome).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+    }
+
 }

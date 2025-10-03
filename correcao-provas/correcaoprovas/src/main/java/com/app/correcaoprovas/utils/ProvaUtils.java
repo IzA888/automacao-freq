@@ -8,13 +8,19 @@ import java.io.IOException;
 
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 
 
@@ -48,6 +54,36 @@ public class ProvaUtils{
 
         return pdfs;
 
+    }
+
+    //Informações da prova
+    public static Map<String, String> infoProva(){
+        List<File> pdfs = carregarArquivos();
+        List<Map<String, String>> infos = new ArrayList<>();
+
+        for (File pdf : pdfs) {
+            try (PDDocument document = PDDocument.load(pdf)) {
+            PDFTextStripper stripper = new PDFTextStripper();
+            String texto = stripper.getText(document);
+
+            Map<String, String> info = new java.util.HashMap<>();
+            Matcher turma = Pattern.compile("turma[:\\s]+(\\w+)").matcher(texto.toLowerCase());
+            Matcher materia = Pattern.compile("materia[:\\s]+(\\w+)").matcher(texto.toLowerCase());
+            Matcher aluno = Pattern.compile("aluno[:\\s]+([\\w\\s]+)").matcher(texto.toLowerCase());
+            Matcher ano = Pattern.compile("ano[:\\s]+(\\d{4})").matcher(texto.toLowerCase());
+
+            if (turma.find()) info.put("turma", turma.group(1));
+            if (materia.find()) info.put("materia", materia.group(1));
+            if (aluno.find()) info.put("aluno", aluno.group(1).trim());
+            if (ano.find()) info.put("ano", ano.group(1));
+
+            infos.add(info);
+            } catch (IOException e) {
+            e.printStackTrace();
+            }
+        }
+        // Retorne a lista de mapas com as informações de todos os PDFs
+        return infos.iterator().hasNext() ? infos.get(0) : new HashMap<>();
     }
 
     // //Transforma PDF e imagem, 1 por vez
