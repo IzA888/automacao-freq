@@ -10,10 +10,6 @@ import com.app.correcaoprovas.dto.ProvaDto;
 import com.app.correcaoprovas.model.Prova;
 import com.app.correcaoprovas.service.AlunoService;
 import com.app.correcaoprovas.service.ProvaService;
-import com.app.correcaoprovas.utils.ArquivoService;
-import com.app.correcaoprovas.utils.CalcularNota;
-import com.app.correcaoprovas.utils.CorrecaoProva;
-
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +42,7 @@ public class ProvaController {
     }
 
     @GetMapping("salvar")
-    public ResponseEntity<String> salvarNotas(@RequestBody String[] nomeAlunos, Double[] notas) throws Exception {
+    public ResponseEntity<String> salvarNotas(@RequestBody List<String> nomeAlunos, List<Double> notas) throws Exception {
         return ResponseEntity.ok().body(ProvaService.salvarResultados(nomeAlunos, notas).toString());
     }
     

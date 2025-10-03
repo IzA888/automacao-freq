@@ -6,24 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 
-import org.bytedeco.opencv.opencv_core.Rect;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.app.correcaoprovas.model.Prova;
 import com.app.correcaoprovas.repository.ProvaRepository;
-import com.app.correcaoprovas.utils.AlternativasService;
-import com.app.correcaoprovas.utils.ArquivoService;
-import com.app.correcaoprovas.utils.GabaritoService;
+import com.app.correcaoprovas.utils.AlternativasUtils;
+import com.app.correcaoprovas.utils.ProvaUtils;
+import com.app.correcaoprovas.utils.GabaritoUtils;
 
 public class ProvaService {
 
     @Autowired
     private static ProvaRepository provaRepo;
+
+    @Autowired
+    private static Prova prova;
 
     public static Prova getById(Long id) {
         return provaRepo.findById(id).orElseThrow(() -> new RuntimeException("Prova não encontrada"));
@@ -37,63 +37,79 @@ public class ProvaService {
         return provaRepo.findByAno(ano).orElseThrow(() -> new RuntimeException("Ano não encontrada"));
     }
 
-    public static Double calcularNotas(Double valorQuestao) {
-        List<String> correcao = GabaritoService.gabaritoLista();
+    public static Prova save(Prova prova) {
+        return provaRepo.save(prova);
+    }
 
-        //Conta acertos
-        Long acertos =  correcao.stream()
-                        .filter(q -> {
-                            (AlternativasService.alternativasMarcadas()).filter(a -> a.equals(q))
-                            .findAny().isPresent();
-                        })
-                        .count();
+    public static Double calcularNotas(Double valorQuestao) throws Exception {
+        //Num. acertos
+        Integer acertos = corrigirProvas(null).values().size();
                     
         return acertos * valorQuestao;
     }
 
-    public static Object salvarResultados(String[] nomeAlunos, Double[] notas) {
-        File pastaSaida = new File("resultados");
-        if(!pastaSaida.exists()) pastaSaida.mkdirs();
-
-        JOptionPane.showMessageDialog(null, "Corrigindo provas...");
-
-        for (File file : Objects.requireNonNull(pdfs.toArray(new File[0]))){
-            if (file.getName().equalsIgnoreCase("gabarito.pdf")) continue;
-            if (file.getName().toLowerCase().endsWith(".pdf")) {
-                File resultados = new File(pastaSaida, file.getName().replace(".pdf", "resultado.xlsx"));// salvar em formato excel
-            }
-
-            JOptionPane.showMessageDialog(null, "Correção concluída, salvo na pasta resultados");
+    public static Map<String, Double> salvarResultados(List<String> nomeAlunos, List<Double> notas) {
+        Map<String, Double> resultados = new HashMap<>();
+        for (int i = 0; i < nomeAlunos.size() && i < notas.size(); i++) {
+            resultados.put(nomeAlunos.get(i), notas.get(i));
         }
+
+        //Salvar em arquivo excel
+        try {
+            ProvaUtils.salvarResultadosExcel(resultados);
+            JOptionPane.showMessageDialog(null, "Resultados salvos com sucesso!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao salvar resultados: " + e.getMessage(),
+             "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return resultados;
+
     }
 
-    public static Map<Integer, Boolean> corrigirProvas(String filePath) {
-        Map<Integer, Boolean> resultado = new HashMap<>();
+    //Corrigir as provas
+    public static Map<Integer, List<String>> corrigirProvas(String filePath) throws Exception {
+        Map<Integer, List<String>> resultado = new HashMap<>();
+        List<String> alternativas = AlternativasUtils.detectarAlternativas();
+        List<String> gabarito = GabaritoUtils.gabaritoLista();
+
+        //Lista de repostas comparadas com o gabrito
+        if(!filePath.isEmpty()){
+                alternativas.stream()
+                .filter(a -> gabarito.stream().anyMatch(g -> g.equals(a)))
+                .collect(Collectors.toList());
+        }
+
+        //Agrupar repostas por questão
+        resultado.forEach((q, resp) -> {
+            //processamento por questão
+            Map.of(alternativas.indexOf(q), alternativas);
+        });
         
-        //Resposta por questão
-        Map<Integer, List<String>> respostas = new HashMap<>();
-        for(String r : respostas){
-            respostas.computeIfAbsent(prova.getQuestoes(), k -> new ArrayList<>()).add(r);
-        }
+        // //Resposta por questão
+        // Map<Integer, List<String>> respostas = new HashMap<>();
+        // for(String r : respostas){
+        //     respostas.computeIfAbsent(prova.getQuestoes(), k -> new ArrayList<>()).add(r);
+        // }
 
-        //Verifica cada questao
-        for (Map.Entry<Integer, List<String>> entry : porQuestao.entrySet()){
-            int questao = entry.getKey();
-            List<String> alternativas = entry.getValue();
+        // //Verifica cada questao
+        // for (Map.Entry<Integer, List<String>> entry : porQuestao.entrySet()){
+        //     int questao = entry.getKey();
+        //     List<String> alternativas = entry.getValue();
 
-            //Pega as marcadas
-            Optional<String> marcada = alternativas.stream().findFirst();
+        //     //Pega as marcadas
+        //     Optional<String> marcada = alternativas.stream().findFirst();
                         
-            if(marcada.isPresent()){
-                String respostaAluno = marcada.get();
-                String correta = gabarito.get(questao);
-                resultado.put(questao, respostaAluno.equals(correta));
-            } else {
-                resultado.put(questao, false);// não marcou = errada
-            }
-        }
+        //     if(marcada.isPresent()){
+        //         String respostaAluno = marcada.get();
+        //         String correta = gabarito.get(questao);
+        //         resultado.put(questao, respostaAluno.equals(correta));
+        //     } else {
+        //         resultado.put(questao, false);// não marcou = errada
+        //     }
+        // }
 
-        return respostas;
+        return resultado;
     }
 
     public static List<File> carregarArquivos(String path) {

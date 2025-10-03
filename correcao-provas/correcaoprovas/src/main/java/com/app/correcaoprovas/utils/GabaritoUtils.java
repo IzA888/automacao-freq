@@ -7,12 +7,8 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
-import org.bytedeco.opencv.opencv_core.Mat;
-import org.bytedeco.opencv.opencv_core.Rect;
-import org.springframework.stereotype.Service;
 
-
-public class GabaritoService {
+public class GabaritoUtils {
 
     public void IdentificarGabarito(List<File> pdfs){
         if (pdfs.equals("gabarito.pdf")) {
@@ -26,18 +22,19 @@ public class GabaritoService {
         }
     }
    
-    public static List<String> gabaritoLista(Mat src) throws Exception{
-        List<Rect> bolhas = ArquivoService.encontrarBolhas(src);
-        List<String> alternativas = AlternativasService.detectarAlternativas(bolhas);
-        List<Boolean> marcadas = AlternativasService.alternativasMarcadas(alternativas);
+    public static List<String> gabaritoLista() throws Exception{
+        List<String> alternativas = AlternativasUtils.detectarAlternativas();
+        Map<Integer,List<Boolean>> marcadas = AlternativasUtils.isMarcada();
+        List<String> gabarito = new ArrayList<>();
 
         //Verificar quais bolhas estão marcadas
-       if( alternativas.iterator().hasNext() && marcadas.iterator().hasNext()){
-        List<String> gabarito = new ArrayList();
+       if( alternativas.iterator().hasNext() && marcadas.values().iterator().hasNext()){
+        //adicionar alternativas ao gabarito
         alternativas.forEach(alt -> gabarito.add(alt));
+        return gabarito;
        }
 
-        return alternativas;
+        return gabarito;
 
     }
 
